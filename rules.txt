@@ -6,7 +6,7 @@ Computer starts first!!!
 *variables
 
 board (2dim array) LOCAL
-0(blank),1(human),-1(comp)
+0(blank - . ),1(human - O),-1(comp - X)
 player = boolean is computer
 
 
@@ -17,7 +17,9 @@ vector<pair<int,int>> searchValidMoves(board,player)
 boolean isEndState(board)
 vector<> evaluateBoard(board) //human,computer,difference
 board updateBoard(board,pair<int,int>move)
+vector<int> findPlacesToRemove(board, player, row, col)
 
-pair<int,int> minimax(node=board,int depth,boolean player, alpha, betha)
+
+pair<int,int> minimax(node=board,int depth,boolean player, alpha, beta)
 
 
