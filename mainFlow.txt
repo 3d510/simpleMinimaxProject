@@ -1,14 +1,23 @@
 int main() {
+	board = initial state
 	while (true) {
-		if(...)  break;
-		//
-		vector moves = searchValidMoves
-		input human moves
-		check human move (check inside the vector)
-		update board
+		if(isEndState)  break;
 		//
 		move = minimax
-		play move
-		update board
+		if (move = -1,-1) 
+			display message... 
+		else 
+			play move
+			board = updateBoard(board,move)
+			printBoard(board)
+		//
+		vector moves = searchValidMoves(board, human)
+		if (moves is empty) 
+			display message...
+		else
+			***print suggestion*** 			
+			input human moves
+			check human move (check inside the vector)
+			printBoard(updated board)
 	}
 }
