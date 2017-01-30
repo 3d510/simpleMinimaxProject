@@ -1,22 +1,23 @@
 Rules
 
-Human starts first!!!
+Computer starts first!!!
 
 
 *variables
 
-board (2dim array) GLOBAL
+board (2dim array) LOCAL
 0(blank),1(human),-1(comp)
 player = boolean is computer
 
 
 *functions
 
-void printBoard()
-vector<pair<int,int>> searchValidMoves(player)
-boolean isEndState()
-vector<> evaluateBoard() //human,computer,difference
+void printBoard(board)
+vector<pair<int,int>> searchValidMoves(board,player)
+boolean isEndState(board)
+vector<> evaluateBoard(board) //human,computer,difference
+board updateBoard(board,pair<int,int>move)
 
-minimax(node=board,int depth,boolean player, alpha, betha)
+pair<int,int> minimax(node=board,int depth,boolean player, alpha, betha)
 
 
