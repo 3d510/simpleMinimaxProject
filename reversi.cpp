@@ -124,3 +124,25 @@ bool isEndState(int board[][BOARD_SIZE]) {
 	vector<pair<int,int> > validMovesForHuma = searchValidMoves(board, false);
 	return validMovesForComp.size()==0 && validMovesForHuma.size()==0;
 }
+
+vector<int> evaluateBoard(int board[][BOARD_SIZE]){
+	int humanPoints = 0, computerPoints = 0;
+	vector<int> points (3); //Stores human,computer,difference (computer - human) values in that order
+	for (int i=0; i<BOARD_SIZE; i++) {
+		for (int j=0; j<BOARD_SIZE; j++) {
+			if (board[i][j] == 1) 
+				humanPoints++;
+			else if (board[i][j] == -1) 
+				computerPoints++;
+		}
+	}
+	points[0]=humanPoints;
+	points[1]=computerPoints;
+	points[2]=computerPoints - humanPoints;
+
+	return points;
+}
+
+int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp){
+
+}
