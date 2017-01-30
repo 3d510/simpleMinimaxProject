@@ -1,0 +1,22 @@
+Rules
+
+Human starts first!!!
+
+
+*variables
+
+board (2dim array) GLOBAL
+0(blank),1(human),-1(comp)
+player = boolean is computer
+
+
+*functions
+
+void printBoard()
+vector<pair<int,int>> searchValidMoves(player)
+boolean isEndState()
+vector<> evaluateBoard() //human,computer,difference
+
+minimax(node=board,int depth,boolean player, alpha, betha)
+
+
