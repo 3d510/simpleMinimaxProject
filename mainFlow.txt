@@ -1,0 +1,14 @@
+int main() {
+	while (true) {
+		if(...)  break;
+		//
+		vector moves = searchValidMoves
+		input human moves
+		check human move (check inside the vector)
+		update board
+		//
+		move = minimax
+		play move
+		update board
+	}
+}
