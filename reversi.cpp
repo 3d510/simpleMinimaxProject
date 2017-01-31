@@ -53,16 +53,25 @@ int main() {
 		} else {
 			// print valid moves for human
 			cout << "The valid moves for human are: " << endl;
-			for (int i=0; i<validMovesForHuma.size(); i++) 
-				cout << validMovesForHuma[i].first << " " << validMovesForHuma[i].second << endl;
+			for (int i=0; i<validMovesForHuma.size(); i++)
+				printf("(%d,%d) ", validMovesForHuma[i].first, validMovesForHuma[i].second);
+            cout << endl;
 			// human enter the move
 			int humanMovRow, humanMovCol;
-			cout << "Please enter your move (enter -1 -1 to quit)" << endl;
-            scanf("%d %d",&humanMovRow, &humanMovCol);
-			if (humanMovRow == -1) {
-				cout << "You lose!" << endl;
-				return 0;
-			}
+            while (true) {
+                bool inputValid = false;
+                cout << "Please enter your move (enter -1 -1 to quit)" << endl;
+                scanf("%d %d", &humanMovRow, &humanMovCol);
+                if (humanMovRow == -1) {
+                    cout << "You quit the game!" << endl;
+                    return 0;
+                }
+                for (int i=0; i<validMovesForHuma.size(); i++)
+                    if (validMovesForHuma[i].first == humanMovRow && validMovesForHuma[i].second == humanMovCol)
+                        inputValid = true;
+                if (inputValid)
+                    break;
+            }
 			// update the move
 			printf("The human has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
 			board = updateBoard(board, make_pair(humanMovRow,humanMovCol), false);
