@@ -7,7 +7,7 @@ void printBoard(int board[][BOARD_SIZE]);
 vector<pair<int,int> > searchValidMoves(int board[][BOARD_SIZE], bool isComp);
 bool isEndState(int board[][BOARD_SIZE]);
 vector<int> evaluateBoard(int board[][BOARD_SIZE]);
-int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move);	
+int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp);	
 vector<int> findPlacesToRemove(int board[][BOARD_SIZE], bool isComp, int row, int col);
 
 int main() {
@@ -136,13 +136,13 @@ vector<int> evaluateBoard(int board[][BOARD_SIZE]){
 				computerPoints++;
 		}
 	}
-	points[0]=humanPoints;
-	points[1]=computerPoints;
-	points[2]=computerPoints - humanPoints;
+	points[0] = humanPoints;
+	points[1] = computerPoints;
+	points[2] = computerPoints - humanPoints;
 
 	return points;
 }
 
 int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp){
-
+	
 }
