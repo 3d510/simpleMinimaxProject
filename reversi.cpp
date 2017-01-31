@@ -2,6 +2,7 @@
 
 using namespace std;
 #define BOARD_SIZE 8
+#define INF 100
 
 int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta,pair<int,int> move);
 void printBoard(int board[][BOARD_SIZE]);
@@ -25,11 +26,56 @@ int main() {
 	board[3][3] = -1;
 
 
-	printBoard(board);
-	vector<pair<int,int> > v = searchValidMoves(board,false);
-	for (int i=0; i<v.size(); i++) {
-		cout << v[i].first << " " << v[i].second << endl;
+	// printBoard(board);
+	// vector<pair<int,int> > v = searchValidMoves(board,false);
+	// for (int i=0; i<v.size(); i++) {
+	// 	cout << v[i].first << " " << v[i].second << endl;
+	// }
+
+	while (true) {
+		cout << "Game in progress\n" << endl;
+		printBoard(board);
+		if (isEndState(board))
+			break;
+
+		pair<int,int> bestMove = findBestMove(board,true);
+		if (bestMove.first = -1) {
+			cout << "The computer has no other moves...\n" << endl;
+		} else {
+			board = updateBoard(board,bestMove,true);
+			printf("The computer has made a move at postion (%d,%d)", bestMove.first, bestMove.second);
+			printBoard(board);
+		}
+
+		vector<pair<int,int> > validMovesForHuma = searchValidMoves(board,false);
+		if (validMovesForHuma.size() == 0) {
+			cout << "The human has no other moves...\n" << endl;
+		} else {
+			// print valid moves for human
+			cout << "The valid moves for human are: ";
+			for (int i=0; i<validMovesForHuma.size(); i++) 
+				cout << validMovesForHuma[i].first << " " << validMovesForHuma[i].second << endl;
+			// human enter the move
+			int humanMovRow, humanMovCol;
+			cout << "Please enter your move (enter -1 -1 to surrender)" << endl;
+			cin >> humanMovRow >> humanMovRow;
+			if (humanMovRow == -1 && humanMovCol == -1) 
+				break;
+			// update the move
+			cout << "Updating Board...\n" << endl;
+			board = updateBoard(board, make_pair(humanMovRow,humanMovCol), false);
+			printBoard(board);
+			cout << endl;
+		}
 	}
+	vector<int> finalScore = evaluateBoard(board);
+	printf("Final Score: Human - %d, Computer: %d\n", finalScore[0], finalScore[1]);
+	if (finalScore[2]<0) 
+		printf("Human wins!\n");
+	else if (finalScore[2]>0)
+		printf("Computer winds!\n");
+	else
+		printf("Deuce");
 }
 
 int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta, pair<int,int> move){
@@ -40,7 +86,7 @@ int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta
 	vector<pair<int,int> > validMoves = searchValidMoves(board, isComp);
 
 	if(isComp){
-		bestVal = -100;
+		bestVal = -INF;
 		for(pair<int,int> move : validMoves){
 			int value = minimax(updateBoard, depth+1, false, alpha, beta, move);
 			bestVal = max(bestVal, value);
@@ -51,7 +97,7 @@ int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta
 		return bestVal;
 	}
 	else{
-		bestVal = 100;
+		bestVal = INF;
 		for(pair<int,int> move : validMoves){
 			int value = minimax(updateBoard, depth+1, true, alpha, beta, move);
 			bestVal = min(bestVal, value);
@@ -61,6 +107,32 @@ int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta
 		}
 		return bestVal;	
 	}
+}
+
+pair<int,int> findBestMove(int board[][BOARD_SIZE], bool isComp) {
+	vector<pair<int,int> > validMoves = searchValidMoves(board,isComp);
+	int bestVal;
+	pair<int,int> bestMove = make_pair(-1,-1);
+	if (isComp) {
+		bestVal = -INF;
+		for (int i=0; i<validMoves.size(); i++) {
+			int val = minimax(board,0,false,-INF,INF,validMoves[i]);
+			if (val > bestVal) {
+				bestMove.first = validMoves[i].first;
+				bestMove.second = validMoves[i].second;
+			}
+		}
+	} else {
+		bestVal = INF;
+		for (int i=0; i<validMoves.size(); i++) {
+			int val = minimax(board,0,false,-INF,INF,validMoves[i]);
+			if (val < bestVal) {
+				bestMove.first = validMoves[i].first;
+				bestMove.second = validMoves[i].second;
+			}
+		}
+	}
+	return bestMove;
 }
 
 void printBoard(int board[][BOARD_SIZE]) {
