@@ -166,6 +166,66 @@ vector<int> evaluateBoard(int board[][BOARD_SIZE]){
 	return points;
 }
 
-int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp){
+vector<pair<int,int>> findBracket(int board[][BOARD_SIZE], pair<int,int> move, bool isComp){
 	
+}
+
+int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp){
+	int matchValue = 1, oppositeValue;
+	pair<int,int> closeMove;
+	
+	if (isComp)
+		matchValue = -1;
+	oppositeValue = -matchValue;
+
+	vector<int> bracket = findBracket(board,move,isComp); // row,col,orientation: RIGHT 1, RIGHTUP 2, RIGHTDOWN 3, LEFT 4, LEFTUP 5, LEFTDOWN 6, DOWN 7, UP 8
+	closeMove = make_pair(bracket[0],bracket[1]);
+
+	board[move.first][move.second]=matchValue;
+
+	switch ( bracket[2] ) {
+		case 1:        
+			for(int i=move.second+1;i<closeMove.second;i++){
+				board[move.first][i] = matchValue;
+			}
+			break;
+		case 2:
+			for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first-1;j>closeMove.first;j--){
+				board[j][i] = matchValue;
+			}
+			break;
+		case 3:
+			for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first+1;j<closeMove.first;j++){
+				board[j][i] = matchValue;
+			}
+			break;
+		case 4:
+			for(int i=move.second-1;i>closeMove.second;i--){
+				board[move.first][i] = matchValue;
+			}
+			break;
+		case 5:
+			for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first-1;j>closeMove.first;j--){
+				board[j][i] = matchValue;
+			}
+			break;	
+		case 6:
+			for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first+1;j<closeMove.first;j++){
+				board[j][i] = matchValue;
+			}
+			break;	
+		case 7:
+			for(int i=move.first+1;i<closeMove.first;i++){
+				board[i][move.second] = matchValue;
+			}
+			break;	
+		case 8:
+			for(int i=move.first-1;i>closeMove.first;i--){
+				board[move.first][i] = matchValue;
+			}
+			break;	
+		default:    
+			cout<<"Error, bad input, quitting\n";
+			break;
+	}	
 }
