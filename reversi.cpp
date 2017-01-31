@@ -3,6 +3,7 @@
 using namespace std;
 #define BOARD_SIZE 8
 
+int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta,pair<int,int> move);
 void printBoard(int board[][BOARD_SIZE]);
 vector<pair<int,int> > searchValidMoves(int board[][BOARD_SIZE], bool isComp);
 bool isEndState(int board[][BOARD_SIZE]);
@@ -28,6 +29,37 @@ int main() {
 	vector<pair<int,int> > v = searchValidMoves(board,false);
 	for (int i=0; i<v.size(); i++) {
 		cout << v[i].first << " " << v[i].second << endl;
+	}
+}
+
+int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta, pair<int,int> move){
+	if(isEndState(board))
+		return evaluateBoard(board)[2];
+	int bestVal;
+	int** newBoard = updateBoard(board, move, isComp);
+	vector<pair<int,int> > validMoves = searchValidMoves(board, isComp);
+
+	if(isComp){
+		bestVal = -100;
+		for(pair<int,int> move : validMoves){
+			int value = minimax(updateBoard, depth+1, false, alpha, beta, move);
+			bestVal = max(bestVal, value);
+			alpha = max(alpha,bestVal);
+			if(beta <= alpha)
+				break;
+		}
+		return bestVal;
+	}
+	else{
+		bestVal = 100;
+		for(pair<int,int> move : validMoves){
+			int value = minimax(updateBoard, depth+1, true, alpha, beta, move);
+			bestVal = min(bestVal, value);
+			beta = min(beta,bestVal);
+			if(beta <= alpha)
+				break;
+		}
+		return bestVal;	
 	}
 }
 
