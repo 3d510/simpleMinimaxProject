@@ -32,11 +32,10 @@ int main() {
 
 	// play the game
 	while (true) {
-		cout << "Game in progress\n" << endl;
-
 		if (isEndState(board))
 			break;
 
+        cout << "COMPUTER TURN" << endl;
 		pair<int,int> bestMove = findBestMove(board,true);
 
 		if (bestMove.first == -1) {
@@ -47,6 +46,7 @@ int main() {
 			printBoard(board);
 		}
 
+        cout << "HUMAN TURN" << endl;
 		vector<pair<int,int> > validMovesForHuma = searchValidMoves(board,false);
 		if (validMovesForHuma.size() == 0) {
 			cout << "The human has no other moves...\n" << endl;
@@ -59,15 +59,14 @@ int main() {
 			int humanMovRow, humanMovCol;
 			cout << "Please enter your move (enter -1 -1 to quit)" << endl;
             scanf("%d %d",&humanMovRow, &humanMovCol);
-			cout << humanMovRow << humanMovCol;
 			if (humanMovRow == -1) {
 				cout << "You lose!" << endl;
 				return 0;
 			}
 			// update the move
-			printf("The computer has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
-			cout << "Updating Board...\n" << endl;
+			printf("The human has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
 			board = updateBoard(board, make_pair(humanMovRow,humanMovCol), false);
+            printBoard(board);
 			cout << endl;
 		}
 	}
@@ -309,7 +308,6 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 	for(int i = 0; i < places.size(); i++){
 		pair<int,int> closeMove = places[i];
 
-
 		if(move.first==closeMove.first && (move.second - closeMove.second) < 0 )
 			orientation = 1;
 		else if((move.first - closeMove.first) < 0 && (move.second - closeMove.second) < 0 )
@@ -323,11 +321,11 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 		else if((move.first - closeMove.first) > 0 && (move.second - closeMove.second) > 0 )
 			orientation = 6;
 		else if((move.first - closeMove.first) > 0 && move.second==closeMove.second)
-			orientation = 7;
-		else if((move.first - closeMove.first) < 0 && move.second==closeMove.second)
 			orientation = 8;
+		else if((move.first - closeMove.first) < 0 && move.second==closeMove.second)
+			orientation = 7;
 
-
+        //orientation: RIGHT 1, RIGHTUP 2, RIGHTDOWN 3, LEFT 4, LEFTUP 5, LEFTDOWN 6, DOWN 7, UP 8
 		switch ( orientation ) {
 			case 1:        
 				for(int i=move.second+1;i<closeMove.second;i++){
@@ -335,12 +333,12 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 				}
 				break;
 			case 2:
-				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first-1;j>closeMove.first;j--){
+				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first+1;j<closeMove.first;j++){
 					board[j][i] = matchValue;
 				}
 				break;
 			case 3:
-				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first+1;j<closeMove.first;j++){
+				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first-1;j>closeMove.first;j--){
 					board[j][i] = matchValue;
 				}
 				break;
@@ -350,12 +348,12 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 				}
 				break;
 			case 5:
-				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first-1;j>closeMove.first;j--){
+				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first+1;j<closeMove.first;j++){
 					board[j][i] = matchValue;
 				}
 				break;	
 			case 6:
-				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first+1;j<closeMove.first;j++){
+				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first-1;j>closeMove.first;j--){
 					board[j][i] = matchValue;
 				}
 				break;	
@@ -366,7 +364,7 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 				break;	
 			case 8:
 				for(int i=move.first-1;i>closeMove.first;i--){
-					board[move.first][i] = matchValue;
+					board[i][move.second] = matchValue;
 				}
 				break;	
 			default:    
