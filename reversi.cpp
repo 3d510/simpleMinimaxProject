@@ -7,6 +7,7 @@ using namespace std;
 int minimax(int board[][BOARD_SIZE], int depth, bool isComp, int alpha, int beta,pair<int,int> move);
 void printBoard(int board[][BOARD_SIZE]);
 vector<pair<int,int> > searchValidMoves(int board[][BOARD_SIZE], bool isComp);
+pair<int,int> findBestMove(int board[][BOARD_SIZE], bool isComp); 
 bool isEndState(int board[][BOARD_SIZE]);
 vector<int> evaluateBoard(int board[][BOARD_SIZE]);
 int** updateBoard(int board[][BOARD_SIZE], pair<int,int> move, bool isComp);	
@@ -24,13 +25,6 @@ int main() {
 	board[BOARD_SIZE/2][BOARD_SIZE/2-1]   = -1;
 	board[3][2] = -1;
 	board[3][3] = -1;
-
-
-	// printBoard(board);
-	// vector<pair<int,int> > v = searchValidMoves(board,false);
-	// for (int i=0; i<v.size(); i++) {
-	// 	cout << v[i].first << " " << v[i].second << endl;
-	// }
 
 	while (true) {
 		cout << "Game in progress\n" << endl;
