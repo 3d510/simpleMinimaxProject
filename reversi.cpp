@@ -2,10 +2,11 @@
 
 using namespace std;
 #define BOARD_SIZE 8
+#define MAX_DEPTH 5
 #define INF 100
 
 int minimax(int** board, int depth, bool isComp, int alpha, int beta,pair<int,int> move);
-pair<int,int> findBestMove(int** board, bool isComp);
+pair<int,int> findBestMove(int** board);
 void printBoard(int** board);
 vector<pair<int,int> > searchValidMoves(int** board, bool isComp);
 bool isEndState(int** board);
@@ -36,7 +37,7 @@ int main() {
 			break;
 
         cout << "COMPUTER TURN" << endl;
-		pair<int,int> bestMove = findBestMove(board,true);
+		pair<int,int> bestMove = findBestMove(board);
 
 		if (bestMove.first == -1) {
 			cout << "The computer has no other moves...\n" << endl;
@@ -82,7 +83,7 @@ int main() {
 
 	vector<int> finalScore = evaluateBoard(board);
 	printf("Final Score: Human - %d, Computer - %d\n", finalScore[0], finalScore[1]);
-	if (finalScore[2]<0) 
+	if (finalScore[2]<0)
 		printf("Human wins!\n");
 	else if (finalScore[2]>0)
 		printf("Computer wins!\n");
@@ -91,11 +92,16 @@ int main() {
 }
 
 int minimax(int** board, int depth, bool isComp, int alpha, int beta, pair<int,int> move){
-	if(isEndState(board))
+	if(depth==MAX_DEPTH || isEndState(board))
 		return evaluateBoard(board)[2];
 	int bestVal;
-	int** newBoard = updateBoard(board, move, isComp);
-	vector<pair<int,int> > validMoves = searchValidMoves(board, isComp);
+    int** newBoard=new int*[BOARD_SIZE];
+    for (int i = 0; i < BOARD_SIZE; ++i)
+        newBoard[i] = new int[BOARD_SIZE];
+    for (int i=0; i<BOARD_SIZE; i++) for (int j=0; j<BOARD_SIZE; j++)
+        newBoard[i][j] = board[i][j];
+	newBoard = updateBoard(newBoard, move, isComp);
+	vector<pair<int,int> > validMoves = searchValidMoves(newBoard, isComp);
 
 	if(isComp){
 		bestVal = -INF;
@@ -124,43 +130,43 @@ int minimax(int** board, int depth, bool isComp, int alpha, int beta, pair<int,i
 	}
 }
 
-pair<int,int> findBestMove(int** board, bool isComp) {
-	vector<pair<int,int> > validMoves = searchValidMoves(board,isComp);
+pair<int,int> findBestMove(int** board) {
+	vector<pair<int,int> > validMoves = searchValidMoves(board,true);
 	pair<int,int> bestMove = make_pair(-1,-1);
 
 	/**
 	  * using minimax algo to find best move
 	**/
-	// int bestVal;
-	// if (isComp) {
-	// 	bestVal = -INF;
-	// 	for (int i=0; i<validMoves.size(); i++) {
-	// 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
-	// 		if (val > bestVal) {
-	// 			bestMove.first = validMoves[i].first;
-	// 			bestMove.second = validMoves[i].second;
-	// 		}
-	// 	}
-	// } else {
-	// 	bestVal = INF;
-	// 	for (int i=0; i<validMoves.size(); i++) {
-	// 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
-	// 		if (val < bestVal) {
-	// 			bestMove.first = validMoves[i].first;
-	// 			bestMove.second = validMoves[i].second;
-	// 		}
-	// 	}
-	// }
+	 int bestVal;
+//	 if (isComp) {
+	 	bestVal = -INF;
+	 	for (int i=0; i<validMoves.size(); i++) {
+	 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
+	 		if (val > bestVal) {
+	 			bestMove.first = validMoves[i].first;
+	 			bestMove.second = validMoves[i].second;
+	 		}
+	 	}
+//	 } else {
+//	 	bestVal = INF;
+//	 	for (int i=0; i<validMoves.size(); i++) {
+//	 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
+//	 		if (val < bestVal) {
+//	 			bestMove.first = validMoves[i].first;
+//	 			bestMove.second = validMoves[i].second;
+//	 		}
+//	 	}
+//	 }
 
 	/**
 	  * using random algo to find best move - for testing
 	**/
-	srand(time(NULL));
-	if (validMoves.size()!=0) {
-		int index = rand() % (validMoves.size());
-		bestMove.first = validMoves[index].first;
-		bestMove.second = validMoves[index].second;
-	}	
+//	srand(time(NULL));
+//	if (validMoves.size()!=0) {
+//		int index = rand() % (validMoves.size());
+//		bestMove.first = validMoves[index].first;
+//		bestMove.second = validMoves[index].second;
+//	}
 
 	return bestMove;
 }
