@@ -2,7 +2,7 @@
 
 using namespace std;
 #define BOARD_SIZE 8
-#define MAX_DEPTH 5
+#define MAX_DEPTH 7
 #define INF 100
 
 int minimax(int** board, int depth, bool isComp, int alpha, int beta,pair<int,int> move);
