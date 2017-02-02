@@ -339,8 +339,10 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 			orientation = 8;
 		else if((move.first - closeMove.first) < 0 && move.second==closeMove.second)
 			orientation = 7;
+		cout << orientation << closeMove.first << " " << closeMove.second << endl;
 
         //orientation: RIGHT 1, RIGHTUP 2, RIGHTDOWN 3, LEFT 4, LEFTUP 5, LEFTDOWN 6, DOWN 7, UP 8
+        int index;
 		switch ( orientation ) {
 			case 1:        
 				for(int i=move.second+1;i<closeMove.second;i++){
@@ -348,13 +350,17 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 				}
 				break;
 			case 2:
-				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first+1;j<closeMove.first;j++){
-					board[j][i] = matchValue;
+				index = 1;
+				while (move.first + index < closeMove.first) {
+					board[move.first+index][move.second+index] = matchValue;
+					index++;
 				}
 				break;
 			case 3:
-				for(int i=move.second+1;i<closeMove.second;i++) for(int j=move.first-1;j>closeMove.first;j--){
-					board[j][i] = matchValue;
+				index = 1;
+				while (move.first - index > closeMove.first) {
+					board[move.first-index][move.second+index] = matchValue;
+					index++;
 				}
 				break;
 			case 4:
@@ -363,13 +369,17 @@ int** updateBoard(int** board, pair<int,int> move, bool isComp){
 				}
 				break;
 			case 5:
-				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first+1;j<closeMove.first;j++){
-					board[j][i] = matchValue;
+				index = 1;
+				while (move.first + index < closeMove.first) {
+					board[move.first+index][move.second-index] = matchValue;
+					index++;
 				}
 				break;	
 			case 6:
-				for(int i=move.second-1;i>closeMove.second;i--) for(int j=move.first-1;j>closeMove.first;j--){
-					board[j][i] = matchValue;
+				index = 1;
+				while (move.first - index > closeMove.first) {
+					board[move.first-index][move.second-index] = matchValue;
+					index++;
 				}
 				break;	
 			case 7:
