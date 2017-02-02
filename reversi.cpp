@@ -2,25 +2,21 @@
 
 using namespace std;
 #define BOARD_SIZE 8
-#define MAX_DEPTH 7
+#define MAX_DEPTH 1
 #define INF 100
 
-int minimax(int** board, int depth, bool isComp, int alpha, int beta,pair<int,int> move);
-pair<int,int> findBestMove(int** board);
-void printBoard(int** board);
-vector<pair<int,int> > searchValidMoves(int** board, bool isComp);
-bool isEndState(int** board);
-vector<int> evaluateBoard(int** board);
-int** updateBoard(int** board, pair<int,int> move, bool isComp);	
-vector<pair<int,int> > findPlacesToRemove(int** board, bool isComp, int row, int col);
+int minimax(vector<vector<int> > board, int depth, bool isComp, int alpha, int beta);
+pair<int,int> findBestMove(vector<vector<int> > board);
+void printBoard(vector<vector<int> > board);
+vector<pair<int,int> > searchValidMoves(vector<vector<int> > board, bool isComp);
+bool isEndState(vector<vector<int> > board);
+vector<int> evaluateBoard(vector<vector<int> > board);
+vector<vector<int> > updateBoard(vector<vector<int> > board, pair<int,int> move, bool isComp);
+vector<pair<int,int> > findPlacesToRemove(vector<vector<int> > board, bool isComp, int row, int col);
 
 int main() {
 	// intialize the board
-	int** board=new int*[BOARD_SIZE];
-	for (int i = 0; i < BOARD_SIZE; ++i)
-	{
-	   board[i] = new int[BOARD_SIZE];
-	}
+	vector<vector<int> > board(BOARD_SIZE, vector<int>(BOARD_SIZE));
 	
 	for (int i=0; i<BOARD_SIZE; i++) 
 		for (int j=0; j<BOARD_SIZE; j++) 
@@ -91,23 +87,18 @@ int main() {
 		printf("It's a deuce\n");
 }
 
-int minimax(int** board, int depth, bool isComp, int alpha, int beta, pair<int,int> move){
+int minimax(vector<vector<int> > board, int depth, bool isComp, int alpha, int beta){
 	if(depth==MAX_DEPTH || isEndState(board))
 		return evaluateBoard(board)[2];
 	int bestVal;
-    int** newBoard=new int*[BOARD_SIZE];
-    for (int i = 0; i < BOARD_SIZE; ++i)
-        newBoard[i] = new int[BOARD_SIZE];
-    for (int i=0; i<BOARD_SIZE; i++) for (int j=0; j<BOARD_SIZE; j++)
-        newBoard[i][j] = board[i][j];
-	newBoard = updateBoard(newBoard, move, isComp);
-	vector<pair<int,int> > validMoves = searchValidMoves(newBoard, isComp);
+	vector<pair<int,int> > validMoves = searchValidMoves(board, isComp);
 
 	if(isComp){
 		bestVal = -INF;
 		for(int i = 0; i < validMoves.size(); i++){
 			pair<int,int> move = validMoves[i];
-			int value = minimax(newBoard, depth+1, false, alpha, beta, move);
+			vector<vector<int> > newBoard = updateBoard(board,move,true);
+			int value = minimax(newBoard, depth+1, false, alpha, beta);
 			bestVal = max(bestVal, value);
 			alpha = max(alpha,bestVal);
 			if(beta <= alpha)
@@ -119,8 +110,8 @@ int minimax(int** board, int depth, bool isComp, int alpha, int beta, pair<int,i
 		bestVal = INF;
 		for(int i = 0; i < validMoves.size(); i++){
 			pair<int,int> move = validMoves[i];
-
-			int value = minimax(newBoard, depth+1, true, alpha, beta, move);
+            vector<vector<int> > newBoard = updateBoard(board,move,true);
+			int value = minimax(newBoard, depth+1, true, alpha, beta);
 			bestVal = min(bestVal, value);
 			beta = min(beta,bestVal);
 			if(beta <= alpha)
@@ -130,48 +121,29 @@ int minimax(int** board, int depth, bool isComp, int alpha, int beta, pair<int,i
 	}
 }
 
-pair<int,int> findBestMove(int** board) {
+pair<int,int> findBestMove(vector<vector<int> > board) {
 	vector<pair<int,int> > validMoves = searchValidMoves(board,true);
 	pair<int,int> bestMove = make_pair(-1,-1);
 
 	/**
 	  * using minimax algo to find best move
 	**/
-	 int bestVal;
-//	 if (isComp) {
-	 	bestVal = -INF;
-	 	for (int i=0; i<validMoves.size(); i++) {
-	 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
-	 		if (val > bestVal) {
-	 			bestMove.first = validMoves[i].first;
-	 			bestMove.second = validMoves[i].second;
-	 		}
-	 	}
-//	 } else {
-//	 	bestVal = INF;
-//	 	for (int i=0; i<validMoves.size(); i++) {
-//	 		int val = minimax(board,0,false,-INF,INF,validMoves[i]);
-//	 		if (val < bestVal) {
-//	 			bestMove.first = validMoves[i].first;
-//	 			bestMove.second = validMoves[i].second;
-//	 		}
-//	 	}
-//	 }
-
-	/**
-	  * using random algo to find best move - for testing
-	**/
-//	srand(time(NULL));
-//	if (validMoves.size()!=0) {
-//		int index = rand() % (validMoves.size());
-//		bestMove.first = validMoves[index].first;
-//		bestMove.second = validMoves[index].second;
-//	}
-
+ 	int bestVal = -INF;
+	for (int i=0; i<validMoves.size(); i++) {
+        int moveRow = validMoves[i].first;
+        int moveCol = validMoves[i].second;
+        board[moveRow][moveCol] = -1;
+        int val = minimax(board,0,false,-INF,INF);
+        board[moveRow][moveCol] = 0;
+        if (val > bestVal) {
+            bestMove.first = moveRow;
+            bestMove.second = moveCol;
+        }
+	}
 	return bestMove;
 }
 
-void printBoard(int** board) {
+void printBoard(vector<vector<int> > board) {
 	cout << endl; 
 	cout << "    0 1 2 3 4 5 6 7" << endl;
 	for (int i=0; i<BOARD_SIZE; i++) {
@@ -189,7 +161,7 @@ void printBoard(int** board) {
 	cout << endl;
 }
 
-vector<pair<int,int> > searchValidMoves(int** board, bool isComp){
+vector<pair<int,int> > searchValidMoves(vector<vector<int> > board, bool isComp){
 	// initialize values 
 	// matchValue is the value for current player
 	// oppositeValue if the value for opponent	
@@ -208,7 +180,7 @@ vector<pair<int,int> > searchValidMoves(int** board, bool isComp){
 	return validMoves;
 }
 
-vector<pair<int,int> > findPlacesToRemove(int** board, bool isComp, int row, int col) {
+vector<pair<int,int> > findPlacesToRemove(vector<vector<int> > board, bool isComp, int row, int col) {
 	// row and col in inputs are row and col of a blank cell (a possible move)
 	// output: vector of pairs, each pair (x,y) such that when we play the move on
 	// cell (row, col) we will remove all the discs between (x,y) and (row,col)
@@ -282,13 +254,13 @@ vector<pair<int,int> > findPlacesToRemove(int** board, bool isComp, int row, int
 	return places;
 }
 
-bool isEndState(int** board) {
+bool isEndState(vector<vector<int> > board) {
 	vector<pair<int,int> > validMovesForComp = searchValidMoves(board, true);
 	vector<pair<int,int> > validMovesForHuma = searchValidMoves(board, false);
 	return validMovesForComp.size()==0 && validMovesForHuma.size()==0;
 }
 
-vector<int> evaluateBoard(int** board){
+vector<int> evaluateBoard(vector<vector<int> > board){
 	int humanPoints = 0, computerPoints = 0;
 	vector<int> points (3); //Stores human,computer,difference (computer - human) values in that order
 	for (int i=0; i<BOARD_SIZE; i++) {
@@ -306,7 +278,7 @@ vector<int> evaluateBoard(int** board){
 	return points;
 }
 
-int** updateBoard(int** board, pair<int,int> move, bool isComp){
+vector<vector<int> > updateBoard(vector<vector<int> > board, pair<int,int> move, bool isComp){
 	int matchValue = 1, oppositeValue;
 	//pair<int,int> closeMove;
 	
