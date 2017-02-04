@@ -2,7 +2,7 @@
 
 using namespace std;
 #define BOARD_SIZE 8
-#define MAX_DEPTH 1
+#define MAX_DEPTH 5
 #define INF 100
 
 int minimax(vector<vector<int> > board, int depth, bool isComp, int alpha, int beta);
@@ -13,6 +13,7 @@ bool isEndState(vector<vector<int> > board);
 vector<int> evaluateBoard(vector<vector<int> > board);
 vector<vector<int> > updateBoard(vector<vector<int> > board, pair<int,int> move, bool isComp);
 vector<pair<int,int> > findPlacesToRemove(vector<vector<int> > board, bool isComp, int row, int col);
+pair<int,int> getInputFromHuma(vector<pair<int,int> >);
 
 int main() {
 	// intialize the board
@@ -51,27 +52,16 @@ int main() {
 			// print valid moves for human
 			cout << "The valid moves for human are: " << endl;
 			for (int i=0; i<validMovesForHuma.size(); i++)
-				printf("(%d,%d) ", validMovesForHuma[i].first, validMovesForHuma[i].second);
+				printf("%d%c ", validMovesForHuma[i].first+1, 'a'+validMovesForHuma[i].second);
             cout << endl;
 			// human enter the move
-			int humanMovRow, humanMovCol;
-            while (true) {
-                bool inputValid = false;
-                cout << "Please enter your move (enter -1 -1 to quit)" << endl;
-                scanf("%d %d", &humanMovRow, &humanMovCol);
-                if (humanMovRow == -1) {
-                    cout << "You quit the game!" << endl;
-                    return 0;
-                }
-                for (int i=0; i<validMovesForHuma.size(); i++)
-                    if (validMovesForHuma[i].first == humanMovRow && validMovesForHuma[i].second == humanMovCol)
-                        inputValid = true;
-                if (inputValid)
-                    break;
-            }
+            pair<int,int> humanMove = getInputFromHuma(validMovesForHuma);
+            if (humanMove.first == -1) {
+	            cout << "You quit the game!" << endl;
+	            return 0;
+	        }
 			// update the move
-			printf("The human has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
-			board = updateBoard(board, make_pair(humanMovRow,humanMovCol), false);
+			board = updateBoard(board, humanMove, false);
             printBoard(board);
 			cout << endl;
 		}
@@ -142,9 +132,9 @@ pair<int,int> findBestMove(vector<vector<int> > board) {
 
 void printBoard(vector<vector<int> > board) {
 	cout << endl; 
-	cout << "    0 1 2 3 4 5 6 7" << endl;
+	cout << "    a b c d e f g h" << endl;
 	for (int i=0; i<BOARD_SIZE; i++) {
-		cout << "  " << i << " ";
+		cout << "  " << i+1 << " ";
 		for (int j=0; j<BOARD_SIZE; j++) {
 			if (board[i][j] == 1) 
 				cout << "O ";
@@ -366,4 +356,26 @@ vector<vector<int> > updateBoard(vector<vector<int> > board, pair<int,int> move,
 		}	
 	}	
 	return board;
+}
+
+pair<int,int> getInputFromHuma(vector<pair<int,int> > validMovesForHuma) {
+	int humanMovRow, humanMovCol;
+	string input;
+    while (true) {
+        bool inputValid = false;
+        cout << "Please enter your move (enter -1 to quit)" << endl;
+        cin >> input;
+        if (input == "-1")
+        	return make_pair(-1,-1);
+        humanMovRow = input[0]-'1';
+        humanMovCol = input[1]-'a';
+
+        for (int i=0; i<validMovesForHuma.size(); i++)
+            if (validMovesForHuma[i].first == humanMovRow && validMovesForHuma[i].second == humanMovCol)
+                inputValid = true;
+        if (inputValid)
+            break;
+    }
+	printf("The human has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
+	return make_pair(humanMovRow, humanMovCol);
 }
