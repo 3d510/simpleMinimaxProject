@@ -40,7 +40,7 @@ int main() {
 			cout << "The computer has no other moves...\n" << endl;
 		} else {
 			board = updateBoard(board,bestMove,true);
-			printf("The computer has made a move at postion (%d,%d)\nUpdating board...\n\n", bestMove.first, bestMove.second);
+			printf("The computer has made a move at postion (%d%c)\nUpdating board...\n\n", bestMove.first+1, 'a'+bestMove.second);
 			printBoard(board);
 		}
 
@@ -376,6 +376,6 @@ pair<int,int> getInputFromHuma(vector<pair<int,int> > validMovesForHuma) {
         if (inputValid)
             break;
     }
-	printf("The human has made a move at postion (%d,%d)\nUpdating board...\n\n", humanMovRow, humanMovCol);
+	printf("The human has made a move at postion (%d%c)\nUpdating board...\n\n", humanMovRow+1, 'a'+humanMovCol);
 	return make_pair(humanMovRow, humanMovCol);
 }
