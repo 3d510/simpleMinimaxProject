@@ -289,8 +289,8 @@ vector<vector<int> > updateBoard(vector<vector<int> > board, pair<int,int> move,
 	int orientation = 0;
 	board[move.first][move.second]=matchValue;
 	
-	for(int i = 0; i < places.size(); i++){
-		pair<int,int> closeMove = places[i];
+	for(int k = 0; k < places.size(); k++){
+		pair<int,int> closeMove = places[k];
 
 		if(move.first==closeMove.first && (move.second - closeMove.second) < 0 )
 			orientation = 1;
